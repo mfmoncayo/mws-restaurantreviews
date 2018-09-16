@@ -1,4 +1,4 @@
-importScripts('js/idblib.js');
+importScripts('js/idb.js');
 //Cache Storage for the Restaurant App!!
 const cacheVersion = 'restaurantApp1.0';
 //Items we'd like to storage
@@ -12,11 +12,10 @@ const cacheVariables = [
   '/css/styles.css',
   '/js/',
   '/js/idb.js',
-  '/js/idblib.js',
   '/js/dbhelper.js',
   '/js/main.js',
   '/js/restaurant_info.js',
-  '/js/register.js',
+  '/js/register.js'
 ];
 
 //Response to Install Event
@@ -56,18 +55,55 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   //Capture the original request
   let originalRequest = event.request;
-  let referrer = event.request.referrer
-  let referrerSplit = referrer.split('=');
-  let r_ID = referrerSplit[1];
   //Check if Restaurant request
   if (originalRequest.url.startsWith("http://localhost:1337/restaurants")) {
-    event.respondWith(
-      idb.open('rr').then(db => {
-        return db.transaction(['restaurants'], 'readonly').objectStore('restaurants').getAll();
-      }).then(response => {
-        return new Response(JSON.stringify(response));
-      })
-    );
+    if (originalRequest.method == 'GET') {
+      event.respondWith(
+        fetch(originalRequest.url)
+        .then(response => {
+          return response;
+        })
+        .catch(error => {
+          return error;
+        })
+      );
+    }
+    if (originalRequest.method == 'PUT') {
+      event.respondWith(
+        fetch(originalRequest.url, {method:originalRequest.method, headers:originalRequest.headers})
+        .then(response => {
+          return new Response(JSON.stringify(response));
+        })
+        .catch(error => {
+          return error;
+        })
+      );
+    }
+  }
+  //Check if Restaurant request
+  else if (originalRequest.url.startsWith("http://localhost:1337/reviews")) {
+    if (originalRequest.method == 'GET') {
+      event.respondWith(
+        fetch(originalRequest.url)
+        .then(response => {
+          return response;
+        })
+        .catch(error => {
+          return error;
+        })
+      );
+    }
+    if (originalRequest.method == 'POST') {
+      event.respondWith(
+        fetch(originalRequest.url, {method:originalRequest.method, headers:originalRequest.headers, body:originalRequest.body})
+        .then(response => {
+          return new Response(JSON.stringify(response));
+        })
+        .catch(error => {
+          return error;
+        })
+      );
+    }
   }
   //Otherwise respond to fetch request
   else {

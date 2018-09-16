@@ -45,9 +45,12 @@ body {
 .inside {
 	margin-top:121px;
 }
-@media only screen and (min-width: 0px) and (max-width:417px) {
+@media only screen and (min-width: 0px) and (max-width:431px) {
 	.navHeader {
 		padding: 5px 10px;
+	}
+	#restaurant-name {
+		font-size:17px;
 	}
 }
 @media only screen and (min-width: 0px) {
@@ -66,6 +69,11 @@ body {
 @media only screen and (min-width: 400px) {
 	#main-restaurant-name {
 		max-width:100%;
+	}
+}
+@media only screen and (min-width: 432px) {
+	#restaurant-name {
+		font-size:20px;
 	}
 }
 @media only screen and (min-width: 600px) {
@@ -265,7 +273,7 @@ nav h1 a {
   margin: 0;
   font-size: 11pt;
 }
-#restaurants-list li button {
+#restaurants-list li button.view {
   background-color: rgb(107, 64, 17);
   border-bottom: 3px solid #eee;
   color: #fff;
@@ -295,7 +303,6 @@ nav h1 a {
 	display:inline-block;
   color: #f18200;
   font-family: Arial,sans-serif;
-  font-size: 20pt;
   font-weight: 200;
   letter-spacing: 0;
   text-transform: uppercase;

@@ -5,7 +5,7 @@ var newMap;
  * Initialize map as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
-  initMap();
+  DBHelper.clearPending();
 });
 
 /**
@@ -72,12 +72,21 @@ fetchRestaurantFromURL = (callback) => {
  * Create restaurant HTML and add it to the webpage
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
+  const btn = document.getElementById('restaurant-button');
+  btn.setAttribute('style', 'padding:0px;border:0px;background-color:transparent;')
+  btn.setAttribute('title', 'Add ' + restaurant.name + ' as a favorite restaurant');
   const svg = document.getElementById('restaurant-favorite');
   svg.setAttribute('style', 'width:35px;height:33px;display:inline-block');
 
   const path = document.createElementNS("http://www.w3.org/2000/svg", 'path');
   path.setAttribute('d', 'M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z');
-  path.setAttribute('style', 'transform:scale(.05);-webkit-transform:scale(.05);fill:rgb(150,150,150);fill-opacity:0.5;stroke-width:3;stroke:rgb(0,0,0)');
+  if (restaurant.is_favorite == true || restaurant.is_favorite == 'true') {
+    path.setAttribute('style', 'transform:scale(.05);-webkit-transform:scale(.05);fill:rgb(255,0,50);stroke-width:3;stroke:rgb(0,0,0)');
+    path.setAttribute('class', 'favorited');
+  }
+  else {
+    path.setAttribute('style', 'transform:scale(.05);-webkit-transform:scale(.05);fill:rgb(150,150,150);fill-opacity:0.5;stroke-width:3;stroke:rgb(0,0,0)');
+  }
   path.onmouseover = function(){
     DBHelper.hoverHeart(this);
   };
@@ -85,6 +94,8 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     DBHelper.toggleHeart(this);
   };
   svg.append(path);
+  btn.append(svg);
+
 
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
@@ -247,10 +258,10 @@ addReviewHTML = () => {
     const reviewComments = document.querySelector('[name=review-comments]').value;
     DBHelper.prepareReview(id, reviewName, reviewRating, reviewComments, (error, response) => {
       if (error) {
-        console.log('Couldn\'t update the DB');
+        console.log(`${error}`);
       }
       else {
-        console.log(`Successfully added: ${response}`);
+        console.log(`${response}`);
       }
     });
   };
